@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PurseApi.Repository.Interfaces
 {
-    interface IPurseRepository
+    public interface IPurseRepository
     {
         Task<Purse> GetOrCreatePurse(int userId);
         Task Commit();

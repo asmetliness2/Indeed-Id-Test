@@ -7,10 +7,16 @@ namespace PurseApi.Models
 {
     public class Result<T>
     {
-        public bool Success { get; set; }
-        public T Value { get; set; }
-        public Error Error { get; set; }
+        public bool Success { get; private set; } = true;
+        public T Value { get; private set; }
+        public Error Error { get; private set; }
 
+
+        public Result() { }
+        public Result (T value) 
+        {
+            this.Value = value;
+        }
 
         private void SetErrorCodeAndMessage(int code, string message)
         {
@@ -20,6 +26,8 @@ namespace PurseApi.Models
                 Message = message
             };
         }
+
+
         public Result<T> SetUnprocessable(string message)
         {
             SetErrorCodeAndMessage(422, message);
