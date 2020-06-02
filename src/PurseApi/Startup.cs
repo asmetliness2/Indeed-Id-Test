@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using PurseApi.Controllers.Filters;
 using PurseApi.Models;
 using PurseApi.Providers;
@@ -48,6 +51,8 @@ namespace PurseApi
                 options.EnableDetailedErrors(true);
             });
 
+            services.ConfigureSwagger();
+
             services.ConfigureInterfaces();
 
             services.ConfigureFilters();
@@ -63,6 +68,13 @@ namespace PurseApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseRouting();
 

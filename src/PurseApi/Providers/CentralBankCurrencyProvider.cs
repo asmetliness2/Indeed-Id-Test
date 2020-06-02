@@ -47,9 +47,9 @@ namespace PurseApi.Providers
         public async Task<IEnumerable<string>> GetAvailableCurrencies()
         {
             IEnumerable<string> result = null;
+
             if(!_cache.TryGetValue(CacheKey, out result))
             {
-
                 var bankResponse = await GetBankResponse();
 
                 result = bankResponse.Cube.InnerCube.CurrencyValues.Select(s => s.Currency).ToList();

@@ -27,7 +27,10 @@ namespace PurseApi.Controllers
         {
             return Ok("test");
         }
-
+        /// <summary>
+        /// Метод для получения состояния своего кошелька
+        /// </summary>
+        /// <param name="userId">Id пользователя</param>  
 
         [HttpGet("{userId}")]
         public async Task<ActionResult<Result<PurseDto>>> GetPurseStatus(int userId)
@@ -35,19 +38,31 @@ namespace PurseApi.Controllers
             return await _purseService.GetPurseStatus(userId);
         }
 
+        /// <summary>
+        /// Метод для пополнения кошелька в одной из валют
+        /// </summary>
+        /// <returns></returns>
+
         [HttpPost("fill")]
         public async Task<ActionResult<Result<PurseDto>>> FillUpPurse([FromBody]MoneyTransactionParam param)
         {
             return await _purseService.FillUpPurse(param);
         }
 
+        /// <summary>
+        /// Метод для снятия денег в одной из валют
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("withdraw")]
         public async Task<ActionResult<Result<PurseDto>>> WithdrawMoney([FromBody]MoneyTransactionParam param)
         {
             return await _purseService.WithdrawMoney(param);
         }
 
-
+        /// <summary>
+        /// Метод перевода денег из одной валюты в другую
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("convert")]
         public async Task<ActionResult<Result<PurseDto>>> ConvertMoney([FromBody]ConvertCurrenciesParam param)
         {
