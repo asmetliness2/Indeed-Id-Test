@@ -56,6 +56,7 @@ namespace PurseApi
             {
                 opt.Filters.Add(typeof(ExceptionFilter));
                 opt.Filters.Add(typeof(ResultFilter));
+                opt.Filters.Add(typeof(LoggingFilter));
             });
         }
 
