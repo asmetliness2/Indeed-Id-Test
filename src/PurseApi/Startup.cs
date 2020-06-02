@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PurseApi.Providers;
 using PurseApi.Providers.Interfaces;
+using PurseApi.Repository.Context;
 
 namespace PurseApi
 {
@@ -32,6 +34,12 @@ namespace PurseApi
             services.AddHttpClient<ICurrencyProvider, CentralBankCurrencyProvider>(client =>
             {
                 client.BaseAddress = new Uri(Configuration["CurrencyProvider:BaseUrl"]);
+            });
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
+                options.EnableDetailedErrors(true);
             });
 
             //services.AddTransient<ICurrencyProvider, CentralBankCurrencyProvider>();

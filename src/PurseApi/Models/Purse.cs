@@ -12,9 +12,16 @@ namespace PurseApi.Models
 
         public IEnumerable<PurseCurrency> Currencies { get; set; }
 
-        public Purse()
+        public Purse(int userId)
         {
+            UserId = userId;
             Currencies = new List<PurseCurrency>();
+        }
+
+        public Purse(int userId, List<PurseCurrency> currencies)
+        {
+            UserId = userId;
+            Currencies = currencies;
         }
 
         public PurseDto ToDto()

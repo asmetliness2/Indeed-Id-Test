@@ -9,7 +9,7 @@ namespace PurseApi.Repository.Interfaces
     interface IPurseRepository
     {
         Task<Purse> GetOrCreatePurse(int userId);
-        void Commit();
+        Task Commit();
 
     }
 }
