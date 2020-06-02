@@ -11,14 +11,15 @@ namespace PurseApi.Models
         public bool Success { get; private set; } = true;
         public Error Error { get; private set; }
 
-        protected void SetErrorCodeAndMessage(int code, string message)
+        public void SetErrorCodeAndMessage(int code, string message)
         {
             this.Success = false;
-            this.Error = new Error
-            {
-                Code = code,
-                Message = message
-            };
+            this.Error = new Error(code, message);
+        }
+
+        public void SetValidationError(string key, string value)
+        {
+            this.Error.ValidationErrors[key] = value;
         }
     }
 
@@ -50,13 +51,20 @@ namespace PurseApi.Models
             return this;
         }
 
-
     }
 
     public class Error
     {
-        public int Code { get; set; }
-        public string Message { get; set; }
+        public int Code { get; }
+        public string Message { get; }
+        public Dictionary<string, string> ValidationErrors { get; }
+
+        public Error(int code, string message)
+        {
+            Code = code;
+            Message = message;
+            ValidationErrors = new Dictionary<string, string>();
+        }
     }
 
 }

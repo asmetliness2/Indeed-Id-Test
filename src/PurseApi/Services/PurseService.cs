@@ -36,9 +36,9 @@ namespace PurseApi.Services
                 return new Result<PurseDto>().SetUnprocessable($"Currency {param.Currency} not supported");
             }
 
-            var purse = await _purseRepository.GetOrCreatePurse(param.UserId);
+            var purse = await _purseRepository.GetOrCreatePurse(param.UserId.Value);
 
-            purse.FillUp(param.Currency, param.Sum);
+            purse.FillUp(param.Currency, param.Sum.Value);
 
             await _purseRepository.Commit();
 
@@ -53,9 +53,9 @@ namespace PurseApi.Services
                 return new Result<PurseDto>().SetUnprocessable($"Currency {param.Currency} not supported");
             }
 
-            var purse = await _purseRepository.GetOrCreatePurse(param.UserId);
+            var purse = await _purseRepository.GetOrCreatePurse(param.UserId.Value);
 
-            if(!purse.TryWithdraw(param.Currency, param.Sum))
+            if(!purse.TryWithdraw(param.Currency, param.Sum.Value))
             {
                 return new Result<PurseDto>().SetUnprocessable("Not Enough Money");
             }
@@ -75,9 +75,9 @@ namespace PurseApi.Services
 
             var ratio = await _currencyProvider.GetCurrenciesRatio();
 
-            var purse = await _purseRepository.GetOrCreatePurse(param.UserId);
+            var purse = await _purseRepository.GetOrCreatePurse(param.UserId.Value);
 
-            if(!purse.TryConvertCurrencies(param.Currency, param.ToCurrency, ratio[param.Currency], ratio[param.ToCurrency], param.Sum))
+            if(!purse.TryConvertCurrencies(param.Currency, param.ToCurrency, ratio[param.Currency], ratio[param.ToCurrency], param.Sum.Value))
             {
                 return new Result<PurseDto>().SetUnprocessable("Not Enough Money");
             }

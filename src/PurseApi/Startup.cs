@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PurseApi.Controllers.Filters;
+using PurseApi.Models;
 using PurseApi.Providers;
 using PurseApi.Providers.Interfaces;
 using PurseApi.Repository;
@@ -50,13 +51,34 @@ namespace PurseApi
                 options.EnableDetailedErrors(true);
             });
 
-            //services.AddTransient<ICurrencyProvider, CentralBankCurrencyProvider>();
 
             services.AddControllers(opt =>
             {
                 opt.Filters.Add(typeof(ExceptionFilter));
                 opt.Filters.Add(typeof(ResultFilter));
                 opt.Filters.Add(typeof(LoggingFilter));
+            });
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = (context) =>
+                {
+                    Result result = new Result();
+
+                    result.SetErrorCodeAndMessage(422, "Incorrect data");
+
+                    var keys = context.ModelState.Keys;
+                    
+                    foreach (var key in keys)
+                    {
+                        if (context.ModelState[key].Errors.Any())
+                        {
+                            result.SetValidationError(key, context.ModelState[key].Errors.First().ErrorMessage);
+                        }    
+                    }
+                    return new UnprocessableEntityObjectResult(result);
+
+                };
             });
         }
 
