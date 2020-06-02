@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PurseApi.Providers.Interfaces
 {
-    interface ICurrencyProvider
+    public interface ICurrencyProvider
     {
         Task<IEnumerable<string>> GetAvailableCurrencies();
 
