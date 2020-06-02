@@ -10,7 +10,7 @@ namespace PurseApi.Models
         public int Id { get; set; }
         public int UserId { get; set; }
 
-        public IEnumerable<PurseCurrency> Currencies { get; set; }
+        public ICollection<PurseCurrency> Currencies { get; set; }
 
         public Purse(int userId)
         {
@@ -45,7 +45,7 @@ namespace PurseApi.Models
                     }
 
                     purseFrom.Sum -= sum;
-                    purseTo.Sum += ((sum / ratioFrom) * ratioTo);
+                    purseTo.Sum += Math.Round(((sum / ratioFrom) * ratioTo), 2);
 
                     return true;
                 }
@@ -72,7 +72,7 @@ namespace PurseApi.Models
             var purseCurrency = this.Currencies.FirstOrDefault(c => c.Currency == currency);
             if(purseCurrency == null)
             {
-                this.Currencies.Append(new PurseCurrency
+                this.Currencies.Add(new PurseCurrency
                 {
                     Currency = currency,
                     Sum = sum,
