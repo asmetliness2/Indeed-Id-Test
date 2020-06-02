@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PurseApi.Services.Interfaces
 {
-    interface IPurseService
+    public interface IPurseService
     {
         Task<Result<PurseDto>> FillUpPurse(MoneyTransactionParam param);
         

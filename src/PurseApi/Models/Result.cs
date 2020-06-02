@@ -5,12 +5,26 @@ using System.Threading.Tasks;
 
 namespace PurseApi.Models
 {
-    public class Result<T>
+
+    public class Result
     {
         public bool Success { get; private set; } = true;
-        public T Value { get; private set; }
         public Error Error { get; private set; }
 
+        protected void SetErrorCodeAndMessage(int code, string message)
+        {
+            this.Success = false;
+            this.Error = new Error
+            {
+                Code = code,
+                Message = message
+            };
+        }
+    }
+
+    public class Result<T>: Result
+    {
+        public T Value { get; private set; }
 
         public Result() { }
         public Result (T value) 
@@ -18,15 +32,11 @@ namespace PurseApi.Models
             this.Value = value;
         }
 
-        private void SetErrorCodeAndMessage(int code, string message)
+        public Result<T> SetServerError(string message)
         {
-            this.Error = new Error
-            {
-                Code = code,
-                Message = message
-            };
+            SetErrorCodeAndMessage(500, message);
+            return this;
         }
-
 
         public Result<T> SetUnprocessable(string message)
         {
@@ -40,7 +50,7 @@ namespace PurseApi.Models
             return this;
         }
 
-        
+
     }
 
     public class Error

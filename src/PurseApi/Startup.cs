@@ -10,9 +10,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PurseApi.Controllers.Filters;
 using PurseApi.Providers;
 using PurseApi.Providers.Interfaces;
+using PurseApi.Repository;
 using PurseApi.Repository.Context;
+using PurseApi.Repository.Interfaces;
+using PurseApi.Services;
+using PurseApi.Services.Interfaces;
 
 namespace PurseApi
 {
@@ -36,6 +41,9 @@ namespace PurseApi
                 client.BaseAddress = new Uri(Configuration["CurrencyProvider:BaseUrl"]);
             });
 
+            services.AddTransient<IPurseRepository, PurseRepository>();
+            services.AddTransient<IPurseService, PurseService>();
+
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
@@ -44,7 +52,11 @@ namespace PurseApi
 
             //services.AddTransient<ICurrencyProvider, CentralBankCurrencyProvider>();
 
-            services.AddControllers();
+            services.AddControllers(opt =>
+            {
+                opt.Filters.Add(typeof(ExceptionFilter));
+                opt.Filters.Add(typeof(ResultFilter));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
