@@ -42,44 +42,18 @@ namespace PurseApi
                 client.BaseAddress = new Uri(Configuration["CurrencyProvider:BaseUrl"]);
             });
 
-            services.AddTransient<IPurseRepository, PurseRepository>();
-            services.AddTransient<IPurseService, PurseService>();
-
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
                 options.EnableDetailedErrors(true);
             });
 
+            services.ConfigureInterfaces();
 
-            services.AddControllers(opt =>
-            {
-                opt.Filters.Add(typeof(ExceptionFilter));
-                opt.Filters.Add(typeof(ResultFilter));
-                opt.Filters.Add(typeof(LoggingFilter));
-            });
+            services.ConfigureFilters();
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = (context) =>
-                {
-                    Result result = new Result();
+            services.ConfigureInvalidModelFactory();
 
-                    result.SetErrorCodeAndMessage(422, "Incorrect data");
-
-                    var keys = context.ModelState.Keys;
-                    
-                    foreach (var key in keys)
-                    {
-                        if (context.ModelState[key].Errors.Any())
-                        {
-                            result.SetValidationError(key, context.ModelState[key].Errors.First().ErrorMessage);
-                        }    
-                    }
-                    return new UnprocessableEntityObjectResult(result);
-
-                };
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
